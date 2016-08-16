@@ -1,0 +1,61 @@
+<?php
+
+    // js
+    $this->headScript()->prependFile('/js/jquery-3.1.0.js');
+    $this->headScript()->appendFile('/js/bootstrap.js');
+    echo $this->headScript();
+    
+    // css
+    $this->headLink()->appendStylesheet('/css/bootstrap.css');
+    echo $this->headLink()
+            
+?>
+<!-- cdn for modernizr, if you haven't included it already -->
+<script src="http://cdn.jsdelivr.net/webshim/1.12.4/extras/modernizr-custom.js"></script>
+<!-- polyfiller file to detect and load polyfills -->
+<script src="http://cdn.jsdelivr.net/webshim/1.12.4/polyfiller.js"></script>
+<script>
+  webshims.setOptions('waitReady', false);
+  webshims.setOptions('forms-ext', {types: 'date'});
+  webshims.polyfill('forms forms-ext');
+  
+  var role = '<?php echo $this->user[0]['role'] ?>';
+  var active = '<?php echo $this->user[0]['active'] ?>';
+  
+  $(document).ready(function() {
+    if (role !== '') {
+        $('form select[name="role"] option[value="'+role+'"]').attr('selected', 'selected');
+    }
+    if (active !== '0') {
+        $('form input[name="active"]').attr('checked', 'checked');
+    }
+  });
+  
+  
+</script>
+
+<form class="col-sm-6" action="/modify/add">
+    <input type="hidden" name="id" value="<?php echo $this->user[0]['id'] ?>">
+  <div class="form-group">
+    <label for="Input1">Name</label>
+    <input type="text" required="required" value="<?php echo $this->user[0]['name'] ?>" name="name" class="form-control" id="Input1" placeholder="Name">
+  </div>
+  <div class="form-group">
+    <label for="Input2">Registration date</label>
+    <input type="date" required="required" value="<?php echo $this->user[0]['registration_date'] ?>" name="registration_date" class="form-control" id="Input2" placeholder="Registration date">
+  </div>
+  <div class="form-group">
+    <label for="Input3">Role</label>
+    <select name="role" id="Input3">
+        <option value="admin">admin</option>
+        <option value="employee">employee</option>
+        <option value="seeker">seeker</option>
+    </select>
+  </div>
+  <div class="checkbox">
+    <label>
+        <input type="checkbox" name="active"> Is user active?
+    </label>
+  </div>
+  <button type="submit" class="btn btn-success">Submit</button>
+</form>

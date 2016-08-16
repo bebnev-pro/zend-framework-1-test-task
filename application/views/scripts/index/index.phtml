@@ -1,0 +1,92 @@
+<?php
+
+    // js
+    $this->headScript()->prependFile('/js/jquery-3.1.0.js');
+    $this->headScript()->appendFile('/js/bootstrap.js');
+    echo $this->headScript();
+    
+    // css
+    $this->headLink()->appendStylesheet('/css/bootstrap.css');
+    echo $this->headLink()
+            
+?>
+<script>
+    $(document).ready(function() {
+        function sort(filter) {
+            var rows = $('table.users tr');
+            $.each(rows, function(key, value) {
+                var txt = $(value).find('td').eq(3).text();
+                if ( txt === filter) {
+                    value.remove();
+                    $(value).insertAfter( $("table.users tbody tr.success") );
+                }
+            });     
+        }
+        $("a[data-filter]").on("click", function() {
+           var filterPhrase = $(this).data('filter');
+           sort(filterPhrase);
+           
+        });
+    });
+
+</script>
+<!--summarize statistics-->
+<div class="col-sm-4">
+    <table class="table">
+        <tr class="success">
+            <td>All active users</td>
+            <td><?php echo $this->activeUsers ?></td>
+        </tr>
+        <tr class="info">
+            <td>New users today</td>
+            <td><?php echo $this->todayUsers ?></td>
+        </tr>
+        <tr class="warning">
+            <td>New users in current week</td>
+            <td><?php echo $this->weekUsers ?></td>
+        </tr>
+        <tr class="danger">
+            <td>New users in current month</td>
+            <td><?php echo $this->monthUsers ?></td>
+        </tr>
+    </table>    
+</div>
+
+<!--add new button-->
+<div class="col-sm-6">
+    <a href="/modify" class="btn btn-lg btn-success">Add new</a>
+</div>
+
+<!--all data about all users-->
+<div class="col-sm-12">
+    <table class="table users">
+        <tr class="success">
+            <th>Id</th>
+            <th>Name</th>
+            <th>Registration date</th>
+            <th>
+                Role &nbsp;
+                <a href="javascript: void 7;" class="btn btn-xs btn-danger" data-filter="admin">Admin</a>&nbsp;
+                <a href="javascript: void 7;" class="btn btn-xs btn-warning" data-filter="employee">Employee</a>&nbsp;
+                <a href="javascript: void 7;" class="btn btn-xs btn-success" data-filter="seeker">Seeker</a>
+            </th>
+            <th>Active</th>
+            <th>Buttons</th>
+            <th></th>
+        </tr>
+        <?php foreach ($this->users as $user)  {
+            echo '<tr>';
+                echo '<td>'.$user["id"].'</td>';
+                echo '<td>'.$user["name"].'</td>';
+                echo '<td>'.$user["registration_date"].'</td>';
+                echo '<td>'.$user["role"].'</td>';
+                echo '<td>'.$user["active"].'</td>';
+                echo '<td>';
+                    echo '<a href="/modify?id='.$user["id"].'" class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Edit</a>&nbsp;';
+                    echo '<a href="/modify/delete?id='.$user["id"].'" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span>&nbsp; Delete</a>';
+                echo '</td>';
+            echo '</tr>';
+        }
+        ?>
+    </table>
+</div>
